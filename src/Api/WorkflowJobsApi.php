@@ -75,7 +75,6 @@ class WorkflowJobsApi
             'application/json',
         ],
         'createJobWorkflowsApiV1JobsPost' => [
-            'application/json',
             'multipart/form-data',
         ],
         'downloadJobFileWorkflowsApiV1JobsJobIdFilesFileIdGet' => [
@@ -567,7 +566,10 @@ class WorkflowJobsApi
      * @param  \OpenAPI\Client\Model\WebhookAuthType|null $webhook_auth_type Webhook Authorization Type (optional)
      * @param  string|null $webhook_auth_header Webhook Authorization Header Name (when type&#x3D;header or type&#x3D;bearer) (optional, default to 'Authorization')
      * @param  string|null $webhook_auth_param Webhook Authorization Parameter Name (when type&#x3D;param) (optional, default to 'token')
-     * @param  mixed|null $body body (optional)
+     * @param  \SplFileObject|null $data Initial job data as JSON (optional)
+     * @param  \SplFileObject|null $file Generic file upload (optional)
+     * @param  \SplFileObject|null $email Email payload (.eml extension) (optional)
+     * @param  \SplFileObject[]|null $attachments Email attachments (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createJobWorkflowsApiV1JobsPost'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -585,11 +587,14 @@ class WorkflowJobsApi
         ?\OpenAPI\Client\Model\WebhookAuthType $webhook_auth_type = null,
         ?string $webhook_auth_header = 'Authorization',
         ?string $webhook_auth_param = 'token',
-        ?mixed $body = null,
+        ?\SplFileObject $data = null,
+        ?\SplFileObject $file = null,
+        ?\SplFileObject $email = null,
+        ?array $attachments = null,
         string $contentType = self::contentTypes['createJobWorkflowsApiV1JobsPost'][0]
     ): \OpenAPI\Client\Model\JobResponse
     {
-        list($response) = $this->createJobWorkflowsApiV1JobsPostWithHttpInfo($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $body, $contentType);
+        list($response) = $this->createJobWorkflowsApiV1JobsPostWithHttpInfo($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $data, $file, $email, $attachments, $contentType);
         return $response;
     }
 
@@ -608,7 +613,10 @@ class WorkflowJobsApi
      * @param  \OpenAPI\Client\Model\WebhookAuthType|null $webhook_auth_type Webhook Authorization Type (optional)
      * @param  string|null $webhook_auth_header Webhook Authorization Header Name (when type&#x3D;header or type&#x3D;bearer) (optional, default to 'Authorization')
      * @param  string|null $webhook_auth_param Webhook Authorization Parameter Name (when type&#x3D;param) (optional, default to 'token')
-     * @param  mixed|null $body (optional)
+     * @param  \SplFileObject|null $data Initial job data as JSON (optional)
+     * @param  \SplFileObject|null $file Generic file upload (optional)
+     * @param  \SplFileObject|null $email Email payload (.eml extension) (optional)
+     * @param  \SplFileObject[]|null $attachments Email attachments (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createJobWorkflowsApiV1JobsPost'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -626,11 +634,14 @@ class WorkflowJobsApi
         ?\OpenAPI\Client\Model\WebhookAuthType $webhook_auth_type = null,
         ?string $webhook_auth_header = 'Authorization',
         ?string $webhook_auth_param = 'token',
-        ?mixed $body = null,
+        ?\SplFileObject $data = null,
+        ?\SplFileObject $file = null,
+        ?\SplFileObject $email = null,
+        ?array $attachments = null,
         string $contentType = self::contentTypes['createJobWorkflowsApiV1JobsPost'][0]
     ): array
     {
-        $request = $this->createJobWorkflowsApiV1JobsPostRequest($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $body, $contentType);
+        $request = $this->createJobWorkflowsApiV1JobsPostRequest($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $data, $file, $email, $attachments, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -790,7 +801,10 @@ class WorkflowJobsApi
      * @param  \OpenAPI\Client\Model\WebhookAuthType|null $webhook_auth_type Webhook Authorization Type (optional)
      * @param  string|null $webhook_auth_header Webhook Authorization Header Name (when type&#x3D;header or type&#x3D;bearer) (optional, default to 'Authorization')
      * @param  string|null $webhook_auth_param Webhook Authorization Parameter Name (when type&#x3D;param) (optional, default to 'token')
-     * @param  mixed|null $body (optional)
+     * @param  \SplFileObject|null $data Initial job data as JSON (optional)
+     * @param  \SplFileObject|null $file Generic file upload (optional)
+     * @param  \SplFileObject|null $email Email payload (.eml extension) (optional)
+     * @param  \SplFileObject[]|null $attachments Email attachments (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createJobWorkflowsApiV1JobsPost'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -807,11 +821,14 @@ class WorkflowJobsApi
         ?\OpenAPI\Client\Model\WebhookAuthType $webhook_auth_type = null,
         ?string $webhook_auth_header = 'Authorization',
         ?string $webhook_auth_param = 'token',
-        ?mixed $body = null,
+        ?\SplFileObject $data = null,
+        ?\SplFileObject $file = null,
+        ?\SplFileObject $email = null,
+        ?array $attachments = null,
         string $contentType = self::contentTypes['createJobWorkflowsApiV1JobsPost'][0]
     ): PromiseInterface
     {
-        return $this->createJobWorkflowsApiV1JobsPostAsyncWithHttpInfo($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $body, $contentType)
+        return $this->createJobWorkflowsApiV1JobsPostAsyncWithHttpInfo($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $data, $file, $email, $attachments, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -834,7 +851,10 @@ class WorkflowJobsApi
      * @param  \OpenAPI\Client\Model\WebhookAuthType|null $webhook_auth_type Webhook Authorization Type (optional)
      * @param  string|null $webhook_auth_header Webhook Authorization Header Name (when type&#x3D;header or type&#x3D;bearer) (optional, default to 'Authorization')
      * @param  string|null $webhook_auth_param Webhook Authorization Parameter Name (when type&#x3D;param) (optional, default to 'token')
-     * @param  mixed|null $body (optional)
+     * @param  \SplFileObject|null $data Initial job data as JSON (optional)
+     * @param  \SplFileObject|null $file Generic file upload (optional)
+     * @param  \SplFileObject|null $email Email payload (.eml extension) (optional)
+     * @param  \SplFileObject[]|null $attachments Email attachments (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createJobWorkflowsApiV1JobsPost'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -851,12 +871,15 @@ class WorkflowJobsApi
         $webhook_auth_type = null,
         $webhook_auth_header = 'Authorization',
         $webhook_auth_param = 'token',
-        $body = null,
+        $data = null,
+        $file = null,
+        $email = null,
+        $attachments = null,
         string $contentType = self::contentTypes['createJobWorkflowsApiV1JobsPost'][0]
     ): PromiseInterface
     {
         $returnType = '\OpenAPI\Client\Model\JobResponse';
-        $request = $this->createJobWorkflowsApiV1JobsPostRequest($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $body, $contentType);
+        $request = $this->createJobWorkflowsApiV1JobsPostRequest($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $data, $file, $email, $attachments, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -907,7 +930,10 @@ class WorkflowJobsApi
      * @param  \OpenAPI\Client\Model\WebhookAuthType|null $webhook_auth_type Webhook Authorization Type (optional)
      * @param  string|null $webhook_auth_header Webhook Authorization Header Name (when type&#x3D;header or type&#x3D;bearer) (optional, default to 'Authorization')
      * @param  string|null $webhook_auth_param Webhook Authorization Parameter Name (when type&#x3D;param) (optional, default to 'token')
-     * @param  mixed|null $body (optional)
+     * @param  \SplFileObject|null $data Initial job data as JSON (optional)
+     * @param  \SplFileObject|null $file Generic file upload (optional)
+     * @param  \SplFileObject|null $email Email payload (.eml extension) (optional)
+     * @param  \SplFileObject[]|null $attachments Email attachments (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createJobWorkflowsApiV1JobsPost'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -924,7 +950,10 @@ class WorkflowJobsApi
         $webhook_auth_type = null,
         $webhook_auth_header = 'Authorization',
         $webhook_auth_param = 'token',
-        $body = null,
+        $data = null,
+        $file = null,
+        $email = null,
+        $attachments = null,
         string $contentType = self::contentTypes['createJobWorkflowsApiV1JobsPost'][0]
     ): Request
     {
@@ -936,6 +965,9 @@ class WorkflowJobsApi
             throw new InvalidArgumentException('invalid length for "$custom_metadata" when calling WorkflowJobsApi.createJobWorkflowsApiV1JobsPost, must be smaller than or equal to 512.');
         }
         
+
+
+
 
 
 
@@ -1044,6 +1076,62 @@ class WorkflowJobsApi
 
 
 
+        // form params
+        if ($data !== null) {
+            $multipart = true;
+            $formParams['data'] = [];
+            $paramFiles = is_array($data) ? $data : [$data];
+            foreach ($paramFiles as $paramFile) {
+                $formParams['data'][] = $paramFile instanceof \Psr\Http\Message\StreamInterface
+                    ? $paramFile
+                    : \GuzzleHttp\Psr7\Utils::tryFopen(
+                        ObjectSerializer::toFormValue($paramFile),
+                        'rb'
+                    );
+            }
+        }
+        // form params
+        if ($file !== null) {
+            $multipart = true;
+            $formParams['file'] = [];
+            $paramFiles = is_array($file) ? $file : [$file];
+            foreach ($paramFiles as $paramFile) {
+                $formParams['file'][] = $paramFile instanceof \Psr\Http\Message\StreamInterface
+                    ? $paramFile
+                    : \GuzzleHttp\Psr7\Utils::tryFopen(
+                        ObjectSerializer::toFormValue($paramFile),
+                        'rb'
+                    );
+            }
+        }
+        // form params
+        if ($email !== null) {
+            $multipart = true;
+            $formParams['email'] = [];
+            $paramFiles = is_array($email) ? $email : [$email];
+            foreach ($paramFiles as $paramFile) {
+                $formParams['email'][] = $paramFile instanceof \Psr\Http\Message\StreamInterface
+                    ? $paramFile
+                    : \GuzzleHttp\Psr7\Utils::tryFopen(
+                        ObjectSerializer::toFormValue($paramFile),
+                        'rb'
+                    );
+            }
+        }
+        // form params
+        if ($attachments !== null) {
+            $multipart = true;
+            $formParams['attachments'] = [];
+            $paramFiles = is_array($attachments) ? $attachments : [$attachments];
+            foreach ($paramFiles as $paramFile) {
+                $formParams['attachments'][] = $paramFile instanceof \Psr\Http\Message\StreamInterface
+                    ? $paramFile
+                    : \GuzzleHttp\Psr7\Utils::tryFopen(
+                        ObjectSerializer::toFormValue($paramFile),
+                        'rb'
+                    );
+            }
+        }
 
         $headers = $this->headerSelector->selectHeaders(
             ['application/json', ],
@@ -1052,14 +1140,7 @@ class WorkflowJobsApi
         );
 
         // for model (json/xml)
-        if (isset($body)) {
-            if (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($body));
-            } else {
-                $httpBody = $body;
-            }
-        } elseif (count($formParams) > 0) {
+        if (count($formParams) > 0) {
             if ($multipart) {
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {

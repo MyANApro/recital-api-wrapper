@@ -84,7 +84,7 @@ try {
 ## `createJobWorkflowsApiV1JobsPost()`
 
 ```php
-createJobWorkflowsApiV1JobsPost($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $body): \OpenAPI\Client\Model\JobResponse
+createJobWorkflowsApiV1JobsPost($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $data, $file, $email, $attachments): \OpenAPI\Client\Model\JobResponse
 ```
 
 Create Job
@@ -118,10 +118,13 @@ $webhook_token = 'webhook_token_example'; // string | Webhook Authorization Toke
 $webhook_auth_type = new \OpenAPI\Client\Model\\OpenAPI\Client\Model\WebhookAuthType(); // \OpenAPI\Client\Model\WebhookAuthType | Webhook Authorization Type
 $webhook_auth_header = 'Authorization'; // string | Webhook Authorization Header Name (when type=header or type=bearer)
 $webhook_auth_param = 'token'; // string | Webhook Authorization Parameter Name (when type=param)
-$body = NULL; // mixed
+$data = "/path/to/file.txt"; // \SplFileObject | Initial job data as JSON
+$file = "/path/to/file.txt"; // \SplFileObject | Generic file upload
+$email = "/path/to/file.txt"; // \SplFileObject | Email payload (.eml extension)
+$attachments = array("/path/to/file.txt"); // \SplFileObject[] | Email attachments
 
 try {
-    $result = $apiInstance->createJobWorkflowsApiV1JobsPost($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $body);
+    $result = $apiInstance->createJobWorkflowsApiV1JobsPost($workflow_id, $workflow_uuid, $start, $custom_metadata, $is_test, $webhook_url, $webhook_token, $webhook_auth_type, $webhook_auth_header, $webhook_auth_param, $data, $file, $email, $attachments);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling WorkflowJobsApi->createJobWorkflowsApiV1JobsPost: ', $e->getMessage(), PHP_EOL;
@@ -142,7 +145,10 @@ try {
 | **webhook_auth_type** | [**\OpenAPI\Client\Model\WebhookAuthType**](../Model/.md)| Webhook Authorization Type | [optional] |
 | **webhook_auth_header** | **string**| Webhook Authorization Header Name (when type&#x3D;header or type&#x3D;bearer) | [optional] [default to &#39;Authorization&#39;] |
 | **webhook_auth_param** | **string**| Webhook Authorization Parameter Name (when type&#x3D;param) | [optional] [default to &#39;token&#39;] |
-| **body** | **mixed**|  | [optional] |
+| **data** | **\SplFileObject****\SplFileObject**| Initial job data as JSON | [optional] |
+| **file** | **\SplFileObject****\SplFileObject**| Generic file upload | [optional] |
+| **email** | **\SplFileObject****\SplFileObject**| Email payload (.eml extension) | [optional] |
+| **attachments** | **\SplFileObject[]**| Email attachments | [optional] |
 
 ### Return type
 
@@ -154,7 +160,7 @@ try {
 
 ### HTTP request headers
 
-- **Content-Type**: `application/json`, `multipart/form-data`
+- **Content-Type**: `multipart/form-data`
 - **Accept**: `application/json`
 
 [[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
