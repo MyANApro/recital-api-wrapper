@@ -2,7 +2,6 @@
 
 namespace MyAnPro\RecitalApi\Api;
 
-use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use MyAnPro\RecitalApi\Exception\RecitalApiWrapperException;
@@ -22,7 +21,7 @@ class ApiWrapper
     {
         $this->baseUrl = static::BASE_URL_STAGING;
 
-        if ($mode !== "staging") {
+        if ($mode === "production") {
             $this->baseUrl = static::BASE_URL_PRODUCTION;
         }
     }
