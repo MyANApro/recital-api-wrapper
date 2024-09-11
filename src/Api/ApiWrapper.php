@@ -5,6 +5,7 @@ namespace MyAnPro\RecitalApi\Api;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use MyAnPro\RecitalApi\Exception\RecitalApiWrapperException;
 use MyAnPro\RecitalApi\Model\CreateJobResponse;
 use MyAnPro\RecitalApi\Model\Workflow;
 
@@ -33,7 +34,7 @@ class ApiWrapper
             ->get($this->baseUrl . 'workflows/api/v1/workflows');
 
         if (!$response->successful()) {
-            throw new Exception(json_encode(['message' => 'Une erreur est survenu lors du listing du workflow', 'status' => $response->status()]));
+            throw new RecitalApiWrapperException('Une erreur est survenu lors du listing du workflow', $response->status(), $response->body());
         }
 
         $listeWorkflow = new Collection();
@@ -75,7 +76,7 @@ class ApiWrapper
             ->post($this->baseUrl . 'workflows/api/v1/jobs');
 
         if (!$response->successful()) {
-            throw new Exception(json_encode(['message' => 'Une erreur est survenu lors de la création du job', 'status' => $response->status()]));
+            throw new RecitalApiWrapperException('Une erreur est survenu lors de la création du job', $response->status(), $response->body());
         }
 
         $reponse = $response->json();
