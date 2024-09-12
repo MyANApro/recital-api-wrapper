@@ -1,29 +1,40 @@
 <?php
 
-namespace MyAnPro\RecitalApi\Model;
+namespace MyaAnPro\RecitalApi\Model;
 
 use Illuminate\Support\Carbon;
+use Throwable;
 
 class Workflow
 {
-    public function __construct(
-        protected int                $id,
-        protected ?int               $originId,
-        protected string             $uuid,
-        protected Carbon|string      $createdAt,
-        protected Carbon|string|null $updatedAt,
-        protected ?string            $name,
-        protected ?string            $resume,
-        protected bool               $valid,
-        protected ?string            $status,
-    )
-    {
-        if ($this->createdAt != null && !($createdAt instanceof Carbon)) {
-            $this->createdAt = Carbon::parse($this->createdAt);
-        }
+    public readonly Carbon $createdAt;
+    public readonly ?Carbon $updatedAt;
 
-        if ($this->updatedAt != null && !($updatedAt instanceof Carbon)) {
-            $this->updatedAt = Carbon::parse($this->updatedAt);
+    /**
+     * Attributes $draftId and $revisions are always null unless constructed from workflow listing by UUID
+     *
+     * @see \MyaAnPro\RecitalApi\Api\ApiWrapper::getAllWorkflow()
+     * @see \MyaAnPro\RecitalApi\Api\ApiWrapper::getAllWorkflowsByUuid()
+     */
+    public function __construct(
+        public readonly int $id,
+        public readonly ?int $orgId,
+        public readonly string $uuid,
+        string $createdAt,
+        ?string $updatedAt,
+        public readonly string $name,
+        public readonly ?string $summary,
+        public readonly bool $valid,
+        public readonly string $status,
+        public readonly ?int $draftId = null,
+        public readonly ?int $revisions = null,
+
+    ) {
+        $this->createdAt = Carbon::parse($createdAt);
+        try {
+            $this->updatedAt = Carbon::parse($updatedAt);
+        } catch (Throwable) {
+            $this->updatedAt = null;
         }
     }
 }
