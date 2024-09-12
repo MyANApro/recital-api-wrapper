@@ -1,6 +1,6 @@
 <?php
 
-namespace MyaAnPro\RecitalApi\Model;
+namespace MyAnaPro\RecitalApi\Model;
 
 use Illuminate\Support\Carbon;
 use Throwable;
@@ -11,10 +11,10 @@ class Workflow
     public readonly ?Carbon $updatedAt;
 
     /**
-     * Attributes $draftId and $revisions are always null unless constructed from workflow listing by UUID
+     * Attributes `$draftId` and `$revisions` are always null unless constructed from workflow listing by UUID
      *
-     * @see \MyaAnPro\RecitalApi\Api\ApiWrapper::getAllWorkflow()
-     * @see \MyaAnPro\RecitalApi\Api\ApiWrapper::getAllWorkflowsByUuid()
+     * @see \MyAnaPro\RecitalApi\Api\ApiWrapper::getAllWorkflow()
+     * @see \MyAnaPro\RecitalApi\Api\ApiWrapper::getAllWorkflowsByUuid()
      */
     public function __construct(
         public readonly int $id,
@@ -28,7 +28,6 @@ class Workflow
         public readonly string $status,
         public readonly ?int $draftId = null,
         public readonly ?int $revisions = null,
-
     ) {
         $this->createdAt = Carbon::parse($createdAt);
         try {

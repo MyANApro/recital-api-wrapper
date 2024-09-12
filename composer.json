@@ -12,11 +12,12 @@
     "require": {
         "php": "^8.1",
         "nesbot/carbon": "^2",
-        "illuminate/http": "^9.0|^10.0|^11.0"
+        "illuminate/http": "^9.0|^10.0|^11.0",
+        "illuminate/collections": "^9.0|^10.0|^11.0"
     },
     "autoload": {
         "psr-4": {
-            "MyaAnPro\\RecitalApi\\": "src/"
+            "MyAnaPro\\RecitalApi\\": "src/"
         }
     },
     "scripts": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace MyaAnPro\RecitalApi\Exception;
+namespace MyAnaPro\RecitalApi\Exception;
 
 use Exception;
 use Illuminate\Http\Client\Response;
@@ -32,5 +32,10 @@ class RecitalApiWrapperException extends Exception
         } catch (Throwable) {
             return parent::__toString();
         }
+    }
+
+    public function getRecitalResponse(): Response
+    {
+        return $this->response;
     }
 }

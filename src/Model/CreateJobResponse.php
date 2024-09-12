@@ -1,6 +1,6 @@
 <?php
 
-namespace MyaAnPro\RecitalApi\Model;
+namespace MyAnaPro\RecitalApi\Model;
 
 use Illuminate\Support\Carbon;
 use Throwable;

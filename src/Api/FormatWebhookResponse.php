@@ -1,17 +1,17 @@
 <?php
 
-namespace MyaAnPro\RecitalApi\Api;
+namespace MyAnaPro\RecitalApi\Api;
 
 use Exception;
 use Illuminate\Support\Arr;
-use MyaAnPro\RecitalApi\Model\Datapoint;
-use MyaAnPro\RecitalApi\Model\Extract;
-use MyaAnPro\RecitalApi\Model\Value;
+use MyAnaPro\RecitalApi\Model\Datapoint;
+use MyAnaPro\RecitalApi\Model\Extract;
+use MyAnaPro\RecitalApi\Model\Value;
 
 class FormatWebhookResponse
 {
     /**
-     * @return array<\MyaAnPro\RecitalApi\Model\Extract>
+     * @return array<\MyAnaPro\RecitalApi\Model\Extract>
      * @throws \Exception
      */
     public static function format(array $response): array

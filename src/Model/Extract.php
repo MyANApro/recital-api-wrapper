@@ -1,9 +1,12 @@
 <?php
 
-namespace MyaAnPro\RecitalApi\Model;
+namespace MyAnaPro\RecitalApi\Model;
 
 class Extract
 {
+    /**
+     * @param array<\MyAnaPro\RecitalApi\Model\Value> $values
+     */
     public function __construct(
         public readonly int $id,
         public readonly string $name,
@@ -16,7 +19,6 @@ class Extract
         public readonly bool $correctionUser,
         public readonly array $groups,
         public readonly array $objets,
-        /** @param array<\MyaAnPro\RecitalApi\Model\Value> $values */
         public readonly array $values,
     ) {
     }
