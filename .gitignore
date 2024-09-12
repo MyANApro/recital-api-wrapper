@@ -17,3 +17,5 @@ composer.lock
 
 # PHPLint cache
 build/phplint.cache
+
+.idea
