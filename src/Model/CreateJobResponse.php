@@ -1,33 +1,36 @@
 <?php
 
-namespace MyAnPro\RecitalApi\Model;
+namespace MyAnaPro\RecitalApi\Model;
 
 use Illuminate\Support\Carbon;
+use Throwable;
 
 class CreateJobResponse
 {
+    public readonly Carbon $createdAt;
+    public readonly ?Carbon $updatedAt;
+
     public function __construct(
 
-        protected int           $id,
-        protected Carbon|string $createdAt,
-        protected Carbon|string $updatedAt,
-        protected int           $workflowId,
-        protected ?string       $workflowName,
-        protected int           $stepId,
-        protected ?string       $stepName,
-        protected ?int          $index,
-        protected array         $data,
-        protected ?string       $customMetadata,
-        protected bool          $isTest,
-        protected ?string       $state,
-    )
-    {
-        if ($this->createdAt != null && !($createdAt instanceof Carbon)) {
-            $this->createdAt = Carbon::parse($this->createdAt);
-        }
+        public readonly int $id,
+        string $createdAt,
+        ?string $updatedAt,
+        public readonly int $workflowId,
+        public readonly ?string $workflowName,
+        public readonly ?int $stepId,
+        public readonly ?string $stepName,
+        public readonly ?int $index,
+        public readonly ?array $data,
+        public readonly ?string $customMetadata,
+        public readonly bool $isTest,
+        public readonly ?string $state,
 
-        if ($this->updatedAt != null && !($updatedAt instanceof Carbon)) {
-            $this->updatedAt = Carbon::parse($this->updatedAt);
+    ) {
+        $this->createdAt = Carbon::parse($createdAt);
+        try {
+            $this->updatedAt = Carbon::parse($updatedAt);
+        } catch (Throwable) {
+            $this->updatedAt = null;
         }
     }
 }

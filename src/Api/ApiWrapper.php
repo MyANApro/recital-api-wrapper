@@ -1,98 +1,167 @@
 <?php
 
-namespace MyAnPro\RecitalApi\Api;
+namespace MyAnaPro\RecitalApi\Api;
 
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use MyAnPro\RecitalApi\Exception\RecitalApiWrapperException;
-use MyAnPro\RecitalApi\Model\CreateJobResponse;
-use MyAnPro\RecitalApi\Model\Workflow;
+use Illuminate\Support\Str;
+use MyAnaPro\RecitalApi\Exception\RecitalApiWrapperException;
+use MyAnaPro\RecitalApi\Model\CreateJobResponse;
+use MyAnaPro\RecitalApi\Model\Workflow;
+use Throwable;
 
 class ApiWrapper
 {
-    protected const BASE_URL_STAGING = 'https://staging.workflow.recital.ai/';
-    protected const BASE_URL_PRODUCTION = '';
+    protected const BASE_URL_STAGING    = 'https://staging.workflow.recital.ai';
+    protected const BASE_URL_PRODUCTION = 'https://extract.workflows.recital.ai';
     private string $baseUrl;
 
     public function __construct(
         protected string $token,
-        protected string $mode = "staging",
-    )
-    {
+        protected bool $production = false,
+        protected $timeout = 5,
+        protected $connectTimeout = 10,
+    ) {
         $this->baseUrl = static::BASE_URL_STAGING;
 
-        if ($mode === "production") {
+        if ($production) {
             $this->baseUrl = static::BASE_URL_PRODUCTION;
         }
     }
 
-    public function getAllWorkflow(): Collection
+    protected function newClient(): PendingRequest
     {
-        $response = Http::withToken($this->token)
+        return Http::withToken($this->token)
+            ->baseUrl($this->baseUrl)
             ->acceptJson()
-            ->get($this->baseUrl . 'workflows/api/v1/workflows');
+            ->timeout($this->timeout)
+            ->connectTimeout($this->connectTimeout);
+    }
+
+    /**
+     * @return array{Collection, Response}
+     * @throws \MyAnaPro\RecitalApi\Exception\RecitalApiWrapperException
+     * @throws \Illuminate\Http\Client\ConnectionException
+     */
+    public function getAllWorkflow(): array
+    {
+        $response = $this->newClient()->get('workflows/api/v1/workflows');
 
         if (!$response->successful()) {
-            throw new RecitalApiWrapperException('Une erreur est survenu lors du listing du workflow', $response->status(), $response->body());
+            throw new RecitalApiWrapperException('Une erreur est survenu lors du listing du workflow', $response);
         }
 
         $listeWorkflow = new Collection();
-
-        foreach ($response->json() as $workflow) {
+        foreach ($response->json(default: []) as $workflow) {
             $listeWorkflow->push(
                 new Workflow(
-                    $workflow['id'],
-                    $workflow['org_id'],
-                    $workflow['uuid'],
-                    $workflow['created_at'],
-                    $workflow['updated_at'],
-                    $workflow['name'],
-                    $workflow['summary'],
-                    $workflow['valid'],
-                    $workflow['status'],
+                    id: $workflow['id'],
+                    orgId: $workflow['org_id'],
+                    uuid: $workflow['uuid'],
+                    createdAt: $workflow['created_at'],
+                    updatedAt: $workflow['updated_at'],
+                    name: $workflow['name'],
+                    summary: $workflow['summary'],
+                    valid: $workflow['valid'],
+                    status: $workflow['status'],
                 )
             );
         }
 
-        return $listeWorkflow;
+        return [$listeWorkflow, $response];
     }
 
-    public function createJob(
-        string $content,
-        string $webhookUrl,
-        string $uuidWorkflow,
-    ): CreateJobResponse
+    /**
+     * @return array{Collection, Response}
+     * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws \MyAnaPro\RecitalApi\Exception\RecitalApiWrapperException
+     */
+    public function getAllWorkflowsByUuid(): array
     {
-        $response = Http::withToken($this->token)
-            ->attach('file', $content, 'nomFichier.pdf')
-            ->attach('data', json_encode(['ana_webhook_url' => $webhookUrl]), 'data.json')
-            ->acceptJson()
-            ->withOptions([
-                'query' => [
-                    'workflow_uuid' => $uuidWorkflow,
-                ],
-            ])
-            ->post($this->baseUrl . 'workflows/api/v1/jobs');
+        $response = $this->newClient()->get('workflows/api/v1/workflows/by-uuid');
 
         if (!$response->successful()) {
-            throw new RecitalApiWrapperException('Une erreur est survenu lors de la création du job', $response->status(), $response->body());
+            throw new RecitalApiWrapperException('Une erreur est survenu lors du listing du workflow par UUID', $response);
         }
 
-        $reponse = $response->json();
+        try {
+            $listeWorkflow = new Collection();
+            foreach ($response->json(default: []) as $workflow) {
+                $listeWorkflow->push(
+                    new Workflow(
+                        id: $workflow['id'],
+                        orgId: $workflow['org_id'],
+                        uuid: $workflow['uuid'],
+                        createdAt: $workflow['created_at'],
+                        updatedAt: $workflow['updated_at'],
+                        name: $workflow['name'],
+                        summary: $workflow['summary'],
+                        valid: $workflow['valid'],
+                        status: $workflow['status'],
+                        draftId: $workflow['draft_id'],
+                        revisions: $workflow['revisions'],
+                    )
+                );
+            }
+        } catch (Throwable $e) {
+            throw new RecitalApiWrapperException("Impossible de construire un objet `Workflow` depuis la réponse Recital", $response, $e);
+        }
 
-        return new CreateJobResponse(
-            $reponse['id'],
-            $reponse['created_at'],
-            $reponse['updated_at'],
-            $reponse['workflow_id'],
-            $reponse['workflow_name'],
-            $reponse['step_id'],
-            $reponse['step_name'],
-            $reponse['index'],
-            $reponse['data'],
-            $reponse['custom_metadata'],
-            $reponse['is_test'],
-            $reponse['state'],
-        );
+        return [$listeWorkflow, $response];
+    }
+
+    /**
+     * @return array{CreateJobResponse, Response}
+     * @throws \MyAnaPro\RecitalApi\Exception\RecitalApiWrapperException
+     * @throws \Illuminate\Http\Client\ConnectionException
+     */
+    public function createJob(
+        string $content,
+        string $uuidWorkflow,
+        string $stepWebhookUrl,
+        string $jobWebhookUrl,
+    ): array {
+        $internalJobUuid = Str::uuid();
+
+        $response = $this->newClient()
+            ->attach('file', $content, 'nomFichier.pdf')
+            ->attach('data', json_encode(['ana_webhook_url' => $stepWebhookUrl]), 'data.json')
+            ->withOptions([
+                'query' => [
+                    'workflow_uuid'   => $uuidWorkflow,
+                    'custom_metadata' => ['internal_job_uuid' => $internalJobUuid],
+                    'webhook_url'     => $jobWebhookUrl,
+                ],
+            ])
+            ->post('workflows/api/v1/jobs');
+
+        if (!$response->successful()) {
+            throw new RecitalApiWrapperException('Une erreur est survenu lors de la création du job', $response);
+        }
+
+        $responseData = $response->json();
+
+        try {
+            $jobResponse = new CreateJobResponse(
+                id: $responseData['id'],
+                createdAt: $responseData['created_at'],
+                updatedAt: $responseData['updated_at'] ?? null,
+                workflowId: $responseData['workflow_id'],
+                workflowName: $responseData['workflow_name'] ?? null,
+                stepId: $responseData['step_id'] ?? null,
+                stepName: $responseData['step_name'] ?? null,
+                index: $responseData['index'] ?? null,
+                data: $responseData['data'] ?? null,
+                customMetadata: $responseData['custom_metadata'] ?? null,
+                isTest: $responseData['is_test'],
+                state: $responseData['state'] ?? null,
+            );
+
+            return [$jobResponse, $response];
+        } catch (Throwable $e) {
+            throw new RecitalApiWrapperException("Impossible de construire un objet `CreateJobResponse` depuis la réponse Recital", $response, $e);
+        }
     }
 }
