@@ -6,6 +6,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use MyAnaPro\RecitalApi\Exception\RecitalApiWrapperException;
 use MyAnaPro\RecitalApi\Model\CreateJobResponse;
 use MyAnaPro\RecitalApi\Model\Workflow;
@@ -121,10 +122,18 @@ class ApiWrapper
         string $webhookUrl,
         string $uuidWorkflow,
     ): array {
+        $internalJobUuid = Str::uuid();
+
         $response = $this->newClient()
             ->attach('file', $content, 'nomFichier.pdf')
             ->attach('data', json_encode(['ana_webhook_url' => $webhookUrl]), 'data.json')
-            ->withOptions(['query' => ['workflow_uuid' => $uuidWorkflow]])
+            ->withOptions([
+                'query' => [
+                    'workflow_uuid'   => $uuidWorkflow,
+                    'custom_metadata' => ['internal_job_uuid' => $internalJobUuid],
+                    'webhook_url'     => $webhookUrl,
+                ],
+            ])
             ->post('workflows/api/v1/jobs');
 
         if (!$response->successful()) {
