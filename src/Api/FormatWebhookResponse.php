@@ -7,14 +7,20 @@ use Illuminate\Support\Arr;
 use MyAnaPro\RecitalApi\Model\Datapoint;
 use MyAnaPro\RecitalApi\Model\Extract;
 use MyAnaPro\RecitalApi\Model\Value;
+use RuntimeException;
 
 class FormatWebhookResponse
 {
+    public static function formatWebhookResponse(array $response)
+    {
+        // Suivant condition du contenu de la reponse, call `formatStepWebhookResponse` ou `formatJobWebhookResponse`
+    }
+
     /**
      * @return array<\MyAnaPro\RecitalApi\Model\Extract>
      * @throws \Exception
      */
-    public static function format(array $response): array
+    public static function formatStepWebhookResponse(array $response): array
     {
         if (!isset($response['extract'])) {
             throw new Exception("");
@@ -67,5 +73,10 @@ class FormatWebhookResponse
         }
 
         return $parsedResponseExtracts;
+    }
+
+    public static function formatJobWebhookResponse(array $response): array
+    {
+        throw new RuntimeException('Not implemented');
     }
 }

@@ -119,19 +119,20 @@ class ApiWrapper
      */
     public function createJob(
         string $content,
-        string $webhookUrl,
         string $uuidWorkflow,
+        string $stepWebhookUrl,
+        string $jobWebhookUrl,
     ): array {
         $internalJobUuid = Str::uuid();
 
         $response = $this->newClient()
             ->attach('file', $content, 'nomFichier.pdf')
-            ->attach('data', json_encode(['ana_webhook_url' => $webhookUrl]), 'data.json')
+            ->attach('data', json_encode(['ana_webhook_url' => $stepWebhookUrl]), 'data.json')
             ->withOptions([
                 'query' => [
                     'workflow_uuid'   => $uuidWorkflow,
                     'custom_metadata' => ['internal_job_uuid' => $internalJobUuid],
-                    'webhook_url'     => $webhookUrl,
+                    'webhook_url'     => $jobWebhookUrl,
                 ],
             ])
             ->post('workflows/api/v1/jobs');
