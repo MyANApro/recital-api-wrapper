@@ -7,26 +7,31 @@ use Throwable;
 
 class CreateJobResponse
 {
-    public readonly Carbon $createdAt;
+    public readonly ?Carbon $createdAt;
     public readonly ?Carbon $updatedAt;
 
     public function __construct(
 
-        public readonly int $id,
-        string $createdAt,
-        ?string $updatedAt,
-        public readonly int $workflowId,
-        public readonly ?string $workflowName,
-        public readonly ?int $stepId,
-        public readonly ?string $stepName,
-        public readonly ?int $index,
-        public readonly ?array $data,
-        public readonly ?string $customMetadata,
-        public readonly bool $isTest,
-        public readonly ?string $state,
+        public readonly int     $id,
+        ?string                 $createdAt = null,
+        ?string                 $updatedAt = null,
+        public readonly ?int    $workflowId = null,
+        public readonly ?string $workflowName = null,
+        public readonly ?int    $stepId = null,
+        public readonly ?string $stepName = null,
+        public readonly ?int    $index = null,
+        public readonly ?array  $data = null,
+        public readonly ?string $customMetadata = null,
+        public readonly ?bool   $isTest = null,
+        public readonly ?string $state = null,
+    )
+    {
+        try {
+            $this->createdAt = Carbon::parse($createdAt);
+        } catch (Throwable) {
+            $this->createdAt = null;
+        }
 
-    ) {
-        $this->createdAt = Carbon::parse($createdAt);
         try {
             $this->updatedAt = Carbon::parse($updatedAt);
         } catch (Throwable) {

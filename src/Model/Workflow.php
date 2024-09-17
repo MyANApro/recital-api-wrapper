@@ -7,7 +7,7 @@ use Throwable;
 
 class Workflow
 {
-    public readonly Carbon $createdAt;
+    public readonly ?Carbon $createdAt;
     public readonly ?Carbon $updatedAt;
 
     /**
@@ -17,19 +17,24 @@ class Workflow
      * @see \MyAnaPro\RecitalApi\Api\ApiWrapper::getAllWorkflowsByUuid()
      */
     public function __construct(
-        public readonly int $id,
-        public readonly ?int $orgId,
-        public readonly string $uuid,
-        string $createdAt,
-        ?string $updatedAt,
-        public readonly string $name,
-        public readonly ?string $summary,
-        public readonly bool $valid,
-        public readonly string $status,
-        public readonly ?int $draftId = null,
-        public readonly ?int $revisions = null,
-    ) {
-        $this->createdAt = Carbon::parse($createdAt);
+        public readonly int     $id,
+        public readonly string  $uuid,
+        public readonly string  $name,
+        public readonly ?int    $orgId = null,
+        ?string                 $createdAt = null,
+        ?string                 $updatedAt = null,
+        public readonly ?string $summary = null,
+        public readonly ?bool   $valid = null,
+        public readonly ?string $status = null,
+        public readonly ?int    $draftId = null,
+        public readonly ?int    $revisions = null,
+    )
+    {
+        try {
+            $this->createdAt = Carbon::parse($createdAt);
+        } catch (Throwable) {
+            $this->createdAt = null;
+        }
         try {
             $this->updatedAt = Carbon::parse($updatedAt);
         } catch (Throwable) {

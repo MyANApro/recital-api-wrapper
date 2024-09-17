@@ -11,16 +11,11 @@ use RuntimeException;
 
 class FormatWebhookResponse
 {
-    public static function formatWebhookResponse(array $response)
-    {
-        // Suivant condition du contenu de la reponse, call `formatStepWebhookResponse` ou `formatJobWebhookResponse`
-    }
-
     /**
      * @return array<\MyAnaPro\RecitalApi\Model\Extract>
      * @throws \Exception
      */
-    public static function formatStepWebhookResponse(array $response): array
+    public static function formatJobWebhookResponse(array $response): array
     {
         if (!isset($response['extract'])) {
             throw new Exception("");
@@ -73,10 +68,5 @@ class FormatWebhookResponse
         }
 
         return $parsedResponseExtracts;
-    }
-
-    public static function formatJobWebhookResponse(array $response): array
-    {
-        throw new RuntimeException('Not implemented');
     }
 }
