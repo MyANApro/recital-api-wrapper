@@ -5,7 +5,7 @@ namespace MyAnaPro\RecitalApi\Model;
 class Extract
 {
     /**
-     * @param array<\MyAnaPro\RecitalApi\Model\Value> $values
+     * @param array<\MyAnaPro\RecitalApi\Model\DataPointValue> $values
      */
     public function __construct(
         public readonly int $id,

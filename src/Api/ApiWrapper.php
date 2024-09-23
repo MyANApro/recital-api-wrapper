@@ -120,8 +120,8 @@ class ApiWrapper
     public function createJob(
         string $content,
         string $uuidWorkflow,
-        string $stepWebhookUrl,
         string $jobWebhookUrl,
+        string $stepWebhookUrl,
     ): array {
         $internalJobUuid = Str::uuid();
 
@@ -131,7 +131,7 @@ class ApiWrapper
             ->withOptions([
                 'query' => [
                     'workflow_uuid'   => $uuidWorkflow,
-                    'custom_metadata' => ['internal_job_uuid' => $internalJobUuid],
+                    'custom_metadata' => json_encode(['internal_job_uuid' => $internalJobUuid]),
                     'webhook_url'     => $jobWebhookUrl,
                 ],
             ])

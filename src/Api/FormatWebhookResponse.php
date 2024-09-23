@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Support\Arr;
 use MyAnaPro\RecitalApi\Model\Datapoint;
 use MyAnaPro\RecitalApi\Model\Extract;
-use MyAnaPro\RecitalApi\Model\Value;
+use MyAnaPro\RecitalApi\Model\DataPointValue;
 use RuntimeException;
 
 class FormatWebhookResponse
@@ -17,7 +17,7 @@ class FormatWebhookResponse
      */
     public static function formatJobWebhookResponse(array $response): array
     {
-        if (!isset($response['extract'])) {
+        if (count($response) === 0 || !isset($response['extract'])) {
             throw new Exception("");
         }
         $extracts = Arr::wrap($response['extract']);
@@ -27,7 +27,7 @@ class FormatWebhookResponse
             $extractResult            = $extract['result'];
             $currentExtractDatapoints = [];
             foreach ($extractResult['values'] as $datapoint) {
-                $datapointValue = new Value(
+                $datapointValue = new DataPointValue(
                     origin: $datapoint['value']['origin'],
                     confidence: $datapoint['value']['confidence'],
                     status: $datapoint['value']['status'],
@@ -46,7 +46,7 @@ class FormatWebhookResponse
                 $currentExtractDatapoints[] = new Datapoint(
                     dataPointId: $datapoint['data_point_id'],
                     dataPointName: $datapoint['data_point_name'],
-                    value: $datapointValue,
+                    dataPointValue: $datapointValue,
                     position: $datapoint['position'],
                     intermediate: $datapoint['intermediate'],
                 );
@@ -67,6 +67,6 @@ class FormatWebhookResponse
             );
         }
 
-        return $parsedResponseExtracts;
+        return [$parsedResponseExtracts, json_decode($response['custom_metadata'], true)];
     }
 }
