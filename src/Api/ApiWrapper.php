@@ -136,7 +136,7 @@ class ApiWrapper
                     'workflow_uuid'   => $uuidWorkflow,
                     'custom_metadata' => json_encode(['internal_job_uuid' => $internalJobUuid, ...$customMetadatas]),
                     'webhook_url'     => $jobWebhookUrl,
-                    'is_test'         => $this->production,
+                    'is_test'         => !$this->production,
                 ],
             ])
             ->post('workflows/api/v1/jobs');
