@@ -58,11 +58,11 @@ class ApiWrapper
             $listeWorkflow->push(
                 new Workflow(
                     id: $workflow['id'],
-                    orgId: $workflow['org_id'],
                     uuid: $workflow['uuid'],
+                    name: $workflow['name'],
+                    orgId: $workflow['org_id'],
                     createdAt: $workflow['created_at'],
                     updatedAt: $workflow['updated_at'],
-                    name: $workflow['name'],
                     summary: $workflow['summary'],
                     valid: $workflow['valid'],
                     status: $workflow['status'],
@@ -92,11 +92,11 @@ class ApiWrapper
                 $listeWorkflow->push(
                     new Workflow(
                         id: $workflow['id'],
-                        orgId: $workflow['org_id'],
                         uuid: $workflow['uuid'],
+                        name: $workflow['name'],
+                        orgId: $workflow['org_id'],
                         createdAt: $workflow['created_at'],
                         updatedAt: $workflow['updated_at'],
-                        name: $workflow['name'],
                         summary: $workflow['summary'],
                         valid: $workflow['valid'],
                         status: $workflow['status'],
@@ -122,17 +122,21 @@ class ApiWrapper
         string $uuidWorkflow,
         string $jobWebhookUrl,
         string $stepWebhookUrl,
+        string $fileName = 'fichier.pdf',
+        array $additionalDatas = [],
+        array $customMetadatas = []
     ): array {
         $internalJobUuid = Str::uuid();
 
         $response = $this->newClient()
-            ->attach('file', $content, 'nomFichier.pdf')
-            ->attach('data', json_encode(['ana_webhook_url' => $stepWebhookUrl]), 'data.json')
+            ->attach('file', $content, $fileName)
+            ->attach('data', json_encode(['ana_webhook_url' => $stepWebhookUrl, ...$additionalDatas]), 'data.json')
             ->withOptions([
                 'query' => [
                     'workflow_uuid'   => $uuidWorkflow,
-                    'custom_metadata' => json_encode(['internal_job_uuid' => $internalJobUuid]),
+                    'custom_metadata' => json_encode(['internal_job_uuid' => $internalJobUuid, ...$customMetadatas]),
                     'webhook_url'     => $jobWebhookUrl,
+                    'is_test'         => $this->production,
                 ],
             ])
             ->post('workflows/api/v1/jobs');
